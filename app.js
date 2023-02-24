@@ -3,6 +3,8 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+require('dotenv').config()
+
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
@@ -21,6 +23,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-app.listen(5002, () =>{
-  console.log("SERVER STARTED")
+app.listen(process.env.PORT, () =>{
+  console.log(`SERVER STARTED at ${process.env.PORT}`)
 })
