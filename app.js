@@ -21,6 +21,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-app.listen(5000, () =>{
+app.listen(5002, () =>{
   console.log("SERVER STARTED")
 })
