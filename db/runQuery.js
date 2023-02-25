@@ -1,7 +1,8 @@
 require("dotenv").config();
 const mysql = require("mysql");
 
-const con = mysql.createConnection({
+const pool = mysql.createPool({
+  connectionLimit: 10,
   host: process.env.HOST,
   user: process.env.DB_USER,
   password: process.env.PASSWORD,
@@ -10,15 +11,13 @@ const con = mysql.createConnection({
 
 function runQuery(query, params) {
   return new Promise((resolve, reject) => {
-    con.query(query, params, function (error, results, fields) {
+    pool.query(query, params, function (error, results, fields) {
       if (error) {
         reject(error);
       } else {
         resolve(results);
       }
     });
-  }).finally(() => {
-    con.end();
   });
 }
 
