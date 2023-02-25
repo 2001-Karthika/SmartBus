@@ -17,7 +17,7 @@ router.get('/signup', function (request, response) {
 });
 
 router.get("/welcome", function (req, res) {
-  res.render('welcome/welcome.ejs')
+  res.render('admin/welcome.ejs')
 })
 
 router.post('/signup', async function (request, response) {
@@ -57,8 +57,34 @@ router.post("/login", async function (req, res) {
 
 // when login is success
 
-router.get('/dashboard', function (request, res) {
-  sendHTTPResponse.success(response, "Response successfull");
+router.get('/driver-details', function (request, res) {
+  res.render('admin/driver.ejs')
+});
+
+router.get('/driver', async function (request, res) {
+  const query = `SELECT * FROM driver`
+  const driverlist = await runQuery(query)
+  sendHTTPResponse.success(res, "Response successfull", driverlist);
+});
+
+router.post('/driver', async function (req, res) {
+  try{
+    console.log(req.body)
+  const username = req.body.username 
+  const password = req.body.password
+  const adminID = ~~ req.body.adminID
+  const mobile = req.body.mobile
+  const email = req.body.email
+  const name = req.body.name
+  const userType = 1
+  const query = 'INSERT INTO smartbus.driver (name, username, password, user_type, email, ph_num, admin_id) VALUES (?,?,?,?,?,?,?);'
+  await runQuery(query,[ name, username,  password, userType, email, mobile,  adminID])
+  sendHTTPResponse.success(res, "Driver details added successfully")
+  }
+  catch (err) {
+    console.log(err.message)
+    sendHTTPResponse.error(res, "Error in adding credentials",)
+  }
 });
 
 module.exports = router;
