@@ -13,7 +13,7 @@ router.get('/login', function(request, response) {
 });
 router.post('/login', function(request, response) {
   const username = request.body.username // getting data that are send form frontend. Since it is through body, so request.body
-  const password = request.body.passwordponse
+  const password = request.body.password
   const userType = request.body.userType
   sendHTTPResponse.success(response, "Response successfull");
 });
@@ -22,6 +22,15 @@ router.get('/signup', function(request, response) {
   response.render('signup/signup.ejs');
 });
 
+router.post('/signup', function(request, response) {
+  const username = request.body.username
+  const fullname = request.body.fullname // getting data that are send form frontend. Since it is through body, so request.body
+  const emailid = request.body.emailid
+  const phone = request.body.phone
+  const password = request.body.password
+ 
+  sendHTTPResponse.success(response, "Response successfull");
+});
 // router.post('/login', function(request, response) {
 //   response.render('login/login.ejs');
 // });
@@ -38,3 +47,4 @@ module.exports = router;
 // response mandatory field others are optional fields
 // 2. error 
 // response mandatory field others are optional fields
+
