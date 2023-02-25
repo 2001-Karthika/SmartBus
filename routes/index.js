@@ -4,6 +4,10 @@ const runQuery = require('../db/runQuery');
 const sendHTTPResponse = require('../lib/sendHTTPResponse')
 
 
+router.get('/', function(request, response) {
+  response.redirect('/login');
+});
+
 router.get('/login', function(request, response) {
   response.render('login/login.ejs');
 });
@@ -13,6 +17,15 @@ router.post('/login', function(request, response) {
   const userType = request.body.userType
   sendHTTPResponse.success(response, "Response successfull");
 });
+
+router.get('/signup', function(request, response) {
+  response.render('signup/signup.ejs');
+});
+
+// router.post('/login', function(request, response) {
+//   response.render('login/login.ejs');
+// });
+
 router.get('/dashboard', function(request, res) {
   sendHTTPResponse.success(response, "Response successfull");
 });
