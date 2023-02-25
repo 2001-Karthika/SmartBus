@@ -5,7 +5,7 @@ const c = 'ashwin'
 const d = '123456'
 const e = 'test@gmail.com'
 const f = '7994771185'
-const g = 0
+const g = 1
 async function main(a,b,c,d,e,f){
     const res = await runQuery(a,[b,c,d,g,e,f])
     console.log(res)
