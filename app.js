@@ -2,14 +2,22 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const session = require('express-session');
 
 require('dotenv').config()
+
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
 const app = express();
 
+app.use(session({
+  secret: 'mySecretKey',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 60000 } // session will expire in 60 seconds
+}));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
