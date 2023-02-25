@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const runQuery = require('../db/runQuery');
 const sendHTTPResponse = require('../lib/sendHTTPResponse')
+const bodyParser = require("body-parser");
+const encoder = bodyParser.urlencoded();
 
 
 router.get('/', function(request, response) {
@@ -37,6 +39,20 @@ router.post('/signup', async function(request, response) {
 // router.post('/login', function(request, response) {
 //   response.render('login/login.ejs');
 // });
+router.post("/login", async function(req,res){
+  const username = req.body.username;
+  const password = req.body.password;
+  const userType = req.body.userType;
+  const a = 'select * from passenger where username = ? and password = ?'
+  const resp = await runQuery(a,[username,password])
+  console.log(resp)
+  sendHTTPResponse.success(response, "Response successfull");
+})
+
+// when login is success
+router.get("/welcome",encoder,function(req,res){
+  res.sendFile(__dirname + "/welcome.ejs")
+})
 
 router.get('/dashboard', function(request, res) {
   sendHTTPResponse.success(response, "Response successfull");
