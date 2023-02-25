@@ -16,7 +16,7 @@ app.use(session({
   secret: 'mySecretKey',
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 60000 } // session will expire in 60 seconds
+  cookie: { maxAge: 3600 * 1000 * 60 * 60 * 5 } // session will expire in 60 seconds
 }));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
