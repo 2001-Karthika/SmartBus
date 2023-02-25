@@ -22,13 +22,16 @@ router.get('/signup', function(request, response) {
   response.render('signup/signup.ejs');
 });
 
-router.post('/signup', function(request, response) {
+router.post('/signup', async function(request, response) {
   const username = request.body.username
   const fullname = request.body.fullname // getting data that are send form frontend. Since it is through body, so request.body
-  const emailid = request.body.emailid
+  const emailid = request.body.email
   const phone = request.body.phone
   const password = request.body.password
- 
+  const userType = 2
+  const a = 'INSERT INTO `smartbus`.`passenger` ( `name`, `username`,`password`, user_type, `email`, `ph_num`) VALUES (?,?,?,?,?,?);'
+    const res = await runQuery(a,[fullname,username,password,userType,emailid,phone])
+    console.log(res)
   sendHTTPResponse.success(response, "Response successfull");
 });
 // router.post('/login', function(request, response) {
