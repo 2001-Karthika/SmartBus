@@ -17,7 +17,6 @@ function get_value(event) {
     })
       .then((response) => response.json())
       .then((response) => {
-        alert(response.error)
         if (response.error){
           demo.showNotification("left", "bottom", "Invalid Credentials")
         }
