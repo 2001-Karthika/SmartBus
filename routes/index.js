@@ -4,20 +4,38 @@ const router = express.Router();
 const runQuery = require('../db/runQuery');
 const sendHTTPResponse = require('../lib/sendHTTPResponse')
 
+function isLoggedIn(req, res, next) {
+  if (req.session.user) {
+    // User is logged in, proceed to next middleware
+    next();
+  } else {
+    // User is not logged in, redirect to login page
+    res.redirect('/login');
+  }
+}
+
 router.get('/', function (request, response) {
   response.redirect('/login');
 });
 
 router.get('/login', function (request, response) {
-  response.render('login/login.ejs');
+  console.log("first")
+  if (request.session.user) {
+    // User is already logged in, redirect to dashboard
+    response.redirect('/welcome');
+  } else {
+    // User is not logged in, render login page
+    response.render('login/login.ejs');
+  }
+  
 });
 
 router.get('/signup', function (request, response) {
   response.render('signup/signup.ejs');
 });
 
-router.get("/welcome", function (req, res) {
-  res.render('welcome/welcome.ejs')
+router.get("/welcome", isLoggedIn, function (req, res) {
+  res.render('admin/welcome.ejs')
 })
 
 router.post('/signup', async function (request, response) {
@@ -36,6 +54,7 @@ router.post('/signup', async function (request, response) {
 router.post("/login", async function (req, res) {
   const username = req.body.username
   const password = req.body.password
+  req.session.user = username
   const userType = ~~req.body.userType //0-> ADMIM, 1-> DRIVER, 2-> PASSENGER
   let query = ""
   if (userType == 0)
@@ -55,10 +74,41 @@ router.post("/login", async function (req, res) {
   }
 })
 
+router.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/login');
+});
+
 // when login is success
 
-router.get('/dashboard', function (request, res) {
-  sendHTTPResponse.success(response, "Response successfull");
+router.get('/driver-details', isLoggedIn, function (request, res) {
+  res.render('admin/driver.ejs')
+});
+
+router.get('/driver', isLoggedIn, async function (request, res) {
+  const query = `SELECT * FROM driver`
+  const driverlist = await runQuery(query)
+  sendHTTPResponse.success(res, "Response successfull", driverlist);
+});
+
+router.post('/driver', async function (req, res) {
+  try{
+    console.log(req.body)
+  const username = req.body.username 
+  const password = req.body.password
+  const adminID = ~~ req.body.adminID
+  const mobile = req.body.mobile
+  const email = req.body.email
+  const name = req.body.name
+  const userType = 1
+  const query = 'INSERT INTO smartbus.driver (name, username, password, user_type, email, ph_num, admin_id) VALUES (?,?,?,?,?,?,?);'
+  await runQuery(query,[ name, username,  password, userType, email, mobile,  adminID])
+  sendHTTPResponse.success(res, "Driver details added successfully")
+  }
+  catch (err) {
+    console.log(err.message)
+    sendHTTPResponse.error(res, "Error in adding credentials",)
+  }
 });
 
 module.exports = router;
