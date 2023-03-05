@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const runQuery = require('../db/runQuery');
 const sendHTTPResponse = require('../lib/sendHTTPResponse')
+const query = require('./query');
 
 function isLoggedIn(req, res, next) {
   if (req.session.user) {
@@ -45,8 +46,9 @@ router.post('/signup', async function (request, response) {
   const phone = request.body.phone
   const password = request.body.password
   const userType = 2
-  const a = 'INSERT INTO `smartbus`.`passenger` ( `name`, `username`,`password`, user_type, `email`, `ph_num`) VALUES (?,?,?,?,?,?);'
-  const res = await runQuery(a, [fullname, username, password, userType, emailid, phone])
+  // const a = 'INSERT INTO `smartbus`.`passenger` ( `name`, `username`,`password`, user_type, `email`, `ph_num`) VALUES (?,?,?,?,?,?);'
+  // const a = query.addPassenger()
+  await runQuery(query.addPassenger(), [fullname, username, password, userType, emailid, phone])
   sendHTTPResponse.success(response, "Response successfull");
 });
 

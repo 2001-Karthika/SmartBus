@@ -7,7 +7,7 @@ const session = require('express-session');
 require('dotenv').config()
 
 
-const indexRouter = require('./routes/index');
+const appRoute = require('./routes/index');
 const usersRouter = require('./routes/users');
 
 const app = express();
@@ -28,7 +28,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+app.use('/', appRoute);
 app.use('/users', usersRouter);
 
 app.listen(process.env.PORT, () =>{
