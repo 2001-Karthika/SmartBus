@@ -21,3 +21,13 @@ CREATE TABLE
         ph_num text not null,
         primary key(id)
     );
+    CREATE TABLE
+    bus (
+        id int not null auto_increment,
+        bus_number text not null,
+        busfrom text not null ,
+        busto text not null,
+        primary key(id)
+    )
+
+    

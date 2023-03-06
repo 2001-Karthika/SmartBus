@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title></title>
+  <meta charset="utf-8">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jsqr@1.1.1/dist/jsQR.min.js"></script>
+  <script type="text/javascript" src="./qrscanner.js"></script>
+  <style type="text/css">
+  #qrcode-scanner {
+    z-index: 9999;
+    position: fixed;
+    top: 0;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 360px;
+    background-color: #fff;
+    box-shadow: 6px 8px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  #qrcode-scanner video {
+    width: 100%;
+  }
+  </style>
+</head>
+
+<body>
+    <button id="btn-open-qrcode-scanner">
+        <img src="/qr_img.png" alt="" width="50" height="50">
+      </button>
+  <div id="qrcode-scanner" style="display: none; border: 1px solid gray;">
+    <div style="background-color: #ccc; padding: 6px;">
+      <strong name="title">QRCode Scanner</strong>
+      <span name="close" title="Close" style="cursor: pointer; font-weight: bold; float: right;">&times;</span>
+    </div>
+    <div style="text-align: right; padding: 8px;">
+      <span style="cursor: pointer; color: blue;" name="btn-file" onclick="qrcodeScanner.startFile(this)">Switch to File scan</span>
+      <span style="cursor: pointer; color: blue;" name="btn-webcam" onclick="qrcodeScanner.startWebcam(this)">Switch to Webcam scan</span>
+    </div>
+    <div name="pane-file" style="padding: 8px 12px 24px 12px;">
+      <label>Select a QRCode image:</label>
+      <input type="file" name="file" accept="image/png,image/jpg,image/jpeg,image/gif" style="padding: 8px 0px;" onchange="qrcodeScanner.scanFile(this)">
+    </div>
+    <div name="pane-webcam" style="display: none;">
+      <video name="video" autoplay></video>
+      <canvas name="canvas" style="display: none;"></canvas>
+    </div>
+    <div>
+      <span name="lbl-processing" style="background: navy; color: white; padding: 4px; min-width:100%; font-weight: bold; display: none;">Processing ...</span>
+    </div>
+    <div>
+      <button name="close" style="width: 100%;">&times; Close</button>
+    </div>
+  </div>
+  <script type="text/javascript">
+  // create QRCodeScanner instance
+  window.qrcodeScanner = new QRCodeScanner({ rootSelector: "#qrcode-scanner" });
+
+  $(document).on("click", "#btn-open-qrcode-scanner", function(e) {
+    // open QRCodeScanner webcam scanner
+    qrcodeScanner.open((err, result) => {
+      console.log("QRCodeScanner result:", err, result);
+      // console.log("QRCodeScanner dataURL:", result.data);
+    });
+  });
+  </script>
+</body>
+
+</html>

@@ -20,7 +20,8 @@ function get_value(event) {
         if (response.error){
           demo.showNotification("left", "bottom", "Invalid Credentials")
         }
-        else{
+        else
+        {
           window.location.href = '/welcome'
         }
       })

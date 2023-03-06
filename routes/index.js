@@ -35,7 +35,7 @@ router.get('/signup', function (request, response) {
   response.render('signup/signup.ejs');
 });
 
-router.get("/welcome", isLoggedIn, function (req, res) {
+router.get('/welcome', isLoggedIn, function (req, res) {
   res.render('admin/welcome.ejs')
 })
 
