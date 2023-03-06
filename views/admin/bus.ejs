@@ -42,10 +42,10 @@
                         <a class="nav-link " aria-current="page" href="/welcome">Analytics</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="/driver-details">Driver Details</a>
+                        <a class="nav-link " href="/driver-details">Driver Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/bus-details">Bus Details</a>
+                        <a class="nav-link active" href="/bus-details">Bus Details</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/logout">Log Out</a>
@@ -54,59 +54,45 @@
             </div>
         </div>
     </nav>
-    <!-- Add Driver Button -->
+    <!-- Add Bus Button -->
     <div class="row m-3">
         <div style="flex: 80;"></div>
         <div style="flex: 20;">
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#add-driver"><i
-                    class="fa fa-plus"></i> &nbsp;ADD DRIVER
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#add-bus"><i
+                    class="fa fa-plus"></i> &nbsp;ADD BUS
             </button>
         </div>
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="add-driver" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    <div class="modal fade" id="add-bus" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">ADD DRIVER</h5>
+                    <h5 class="modal-title" id="staticBackdropLabel">ADD BUS</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="name">Name</label>
-                                <input type="text" class="form-control" id="name">
+                                <label for="bus_number">Bus Number</label>
+                                <input type="text" class="form-control" id="bus_number">
                             </div>
                             <div class="form-group">
-                                <label for="username">Username</label>
-                                <input type="text" class="form-control" id="username">
+                                <label for="busfrom">Bus From</label>
+                                <input type="text" class="form-control" id="busfrom">
                             </div>
                             <div class="form-group">
-                                <label for="username">Email</label>
-                                <input type="text" class="form-control" id="email">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="mobile">Admin ID</label>
-                                <input type="text" class="form-control" id="admin-id">
-                            </div>
-                            <div class="form-group">
-                                <label for="mobile">Mobile Number</label>
-                                <input type="text" class="form-control" id="mobile">
-                            </div>
-                            <div class="form-group">
-                                <label for="password">Password</label>
-                                <input type="password" class="form-control" id="password">
+                                <label for="busto">Bus To</label>
+                                <input type="text" class="form-control" id="busto">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" onclick="addDriver()">ADD DRIVER</button>
+                    <button type="button" class="btn btn-success" onclick="addBus()">ADD BUS</button>
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -114,9 +100,9 @@
     </div>
 
     <div class="container mt-5">
-        <h3 class="text-center">DRIVER LIST</h3>
+        <h3 class="text-center">BUS LIST</h3>
         <div class="table-responsive dataTables_wrapper dt-bootstrap4">
-            <table id="drivers-list" class="table responsive table-hover" style="width:100%">
+            <table id="bus-list" class="table responsive table-hover" style="width:100%">
             </table>
         </div>
     </div>
@@ -131,12 +117,12 @@
         crossorigin="anonymous"></script>
     <script>
         try {
-            const campaignTable = $('#drivers-list').DataTable({
+            const campaignTable = $('#bus-list').DataTable({
                 ajax: {
-                    url: '/driver',
+                    url: '/bus',
                     type: 'GET',
                     oLanguage: {
-                        sEmptyTable: "No Drivers available"
+                        sEmptyTable: "No Bus available"
                     },
                     dataSrc: function (json) {
                         return json.data;
@@ -151,14 +137,14 @@
                 order: [[0, "desc"]],
                 columns: [
                     { data: 'id', title: 'ID', className: "noVis" },
-                    { data: 'name', title: 'Name' },
-                    { data: 'username', title: 'User Name' },
-                    { data: 'ph_num', title: 'Phone Number' },
+                    { data: 'bus_number', title: 'Bus Number' },
+                    { data: 'busfrom', title: 'Bus From' },
+                    { data: 'busto', title: 'Bus To' },
                     {
             data: 'id',
             title: 'Actions',
             render: function (data, type, row, meta) {
-              return '<button type="button" class="btn btn-sm btn-simple btn-danger" onClick="setDriverInactive(' + data + ')">Inactive</button> ';
+              return '<button type="button" class="btn btn-sm btn-simple btn-danger" onClick="setBusInactive(' + data + ')">Inactive</button> ';
             }
           }
                 ]
@@ -168,27 +154,24 @@
             console.log(error)
         }
 
-        function addDriver() {
-            const name = document.getElementById("name").value
-            const adminID = document.getElementById("admin-id").value
-            const username = document.getElementById("username").value
-            const password = document.getElementById("password").value
-            const email = document.getElementById("email").value
-            const mobile = document.getElementById("mobile").value
-            if (name == '') demo.showNotification("left", "bottom", "Name cant be empty")
-            else if (username == '') demo.showNotification("left", "bottom", "Username cant be empty")
-            else if (adminID == '') demo.showNotification("left", "bottom", "Admon ID cant be empty")
-            else if (password == '') demo.showNotification("left", "bottom", "Password cant be empty")
-            else if (email == '') demo.showNotification("left", "bottom", "Email cant be empty")
-            else if (mobile == '') demo.showNotification("left", "bottom", "Mobile cant be empty")
+        function addBus() {
+            const bus_number = document.getElementById("bus_number").value
+            const busfrom = document.getElementById("busfrom").value
+            const busto = document.getElementById("busto").value
+            //Bus db table contents
+            if (bus_number == '') demo.showNotification("left", "bottom", "Bus number cant be empty")
+            else if (busfrom == '') demo.showNotification("left", "bottom", "Starting point of bus cant be empty")
+            else if (busto == '') demo.showNotification("left", "bottom", "Destination cant be empty")
+            
             else {
-                const driverCredentials = { name, username, adminID, password, mobile, email }
-                fetch('/driver', {
+                const busCredentials = { bus_number, busfrom, busto}
+                fetch('/bus', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(driverCredentials)
+                    body: JSON.stringify(busCredentials)
+                    
                 })
                     .then((response) => response.json())
                     .then((response) => {
@@ -196,7 +179,7 @@
                             demo.showNotification("left", "bottom", response.message);
                         }
                         else {
-                            document.getElementById('add-driver').style.display = 'none'
+                            document.getElementById('add-bus').style.display = 'none'
                             demo.showNotification("left", "bottom", response.message);
                             setTimeout(() => { location.reload() }, 1000);
                         }
