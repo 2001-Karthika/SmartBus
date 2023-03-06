@@ -39,6 +39,15 @@ router.get('/welcome', isLoggedIn, function (req, res) {
   res.render('admin/welcome.ejs')
 })
 
+router.get('/driver-dashboard', isLoggedIn, function (req, res) {
+  res.render('driver/driver-dashboard.ejs')
+})
+
+router.get('/qrscanner', isLoggedIn,function (req, res) {
+  res.render('driver/qrscanner.ejs');
+})
+
+
 router.post('/signup', async function (request, response) {
   const username = request.body.username
   const fullname = request.body.fullname // getting data that are send form frontend. Since it is through body, so request.body
