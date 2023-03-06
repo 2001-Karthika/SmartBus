@@ -87,6 +87,7 @@ router.get('/driver-details', isLoggedIn, function (request, res) {
   res.render('admin/driver.ejs')
 });
 
+
 router.get('/driver', isLoggedIn, async function (request, res) {
   const query = `SELECT * FROM driver`
   const driverlist = await runQuery(query)
@@ -106,6 +107,33 @@ router.post('/driver', async function (req, res) {
   const query = 'INSERT INTO smartbus.driver (name, username, password, user_type, email, ph_num, admin_id) VALUES (?,?,?,?,?,?,?);'
   await runQuery(query,[ name, username,  password, userType, email, mobile,  adminID])
   sendHTTPResponse.success(res, "Driver details added successfully")
+  }
+  catch (err) {
+    console.log(err.message)
+    sendHTTPResponse.error(res, "Error in adding credentials",)
+  }
+});
+
+router.get('/bus-details', isLoggedIn, function (request, res) {
+  res.render('admin/bus.ejs')
+});
+
+router.get('/bus', isLoggedIn, async function (request, res) {
+  const query = `SELECT * FROM bus`
+  const buslist = await runQuery(query)
+  sendHTTPResponse.success(res, "Response successfull", buslist);
+});
+
+router.post('/bus', async function (req, res) {
+  try{
+    console.log(req.body)
+  const bus_number = req.body.bus_number 
+  const busfrom = req.body.busfrom
+  const busto = req.body.busto
+ 
+  const query = 'INSERT INTO smartbus.bus (bus_number, busfrom, busto) VALUES (?,?,?);'
+  await runQuery(query,[ bus_number, busfrom,  busto])
+  sendHTTPResponse.success(res, "Bus details added successfully")
   }
   catch (err) {
     console.log(err.message)
