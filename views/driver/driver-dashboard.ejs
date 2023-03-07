@@ -20,6 +20,9 @@
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.20/af-2.3.4/b-1.6.5/b-colvis-1.6.5/b-flash-1.6.5/b-print-1.6.5/fc-3.3.0/fh-3.1.6/kt-2.5.1/r-2.2.3/rg-1.1.1/sc-2.0.1/sp-1.1.0/sl-1.3.1/datatables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" />
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jsqr@1.1.1/dist/jsQR.min.js"></script>
+    <script type="text/javascript" src="/javascripts/qrscanner.js"></script>
     <title>Login Form</title>
 </head>
 
@@ -43,27 +46,63 @@
             </div>
         </div>
     </nav>
-    <div class="container">
-        <h1>Scan QR Code</h1>
-        <a href="\qrscanner">
-            <img src="/images/qr.png" alt="QR Code to scan" width="200" height="200" >
-            <!--<span class="button-label">Scan QR Code</span>-->
-        </a>
+<div class="container">
+    <div class="row">
+    <h1 class="text-center">Scan QR Code</h1>
+    <h5 class="text-center"><button id="btn-open-qrcode-scanner" style="background-color: #00631b; color: aliceblue;" class="text-center p-1">Click here to Scan &nbsp; <i class="fa fa-camera"></i></button></h5>
+    <!-- <h1 class="text-center"><img src="/images/qr.png" id="btn-open-qrcode-scanner" alt="QR Code to scan" width="200" height="200" ></h1> -->
+    </div>    
+</div>
+
+<!-- <div class="container" style="margin-bottom: 35px;"> -->
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6" style="margin-bottom: 35px;">
+            <div id="qrcode-scanner" style="display: none; border: 1px solid gray;">
+                <div style="background-color: #ccc; padding: 6px;">
+                  <strong name="title">QRCode Scanner</strong>
+                  <span name="close" title="Close" style="cursor: pointer; font-weight: bold; float: right;">&times;</span>
+                </div>
+                <div style="text-align: right; padding: 8px;">
+                  <span style="cursor: pointer; color: blue;" name="btn-file" onclick="qrcodeScanner.startFile(this)">Switch to File scan</span>
+                  <span style="cursor: pointer; color: blue;" name="btn-webcam" onclick="qrcodeScanner.startWebcam(this)">Switch to Webcam scan</span>
+                </div>
+                <div name="pane-file" style="padding: 8px 12px 24px 12px;">
+                  <label>Select a QRCode image:</label>
+                  <input type="file" name="file" accept="image/png,image/jpg,image/jpeg,image/gif" style="padding: 8px 0px;" onchange="qrcodeScanner.scanFile(this)">
+                </div>
+                <div name="pane-webcam" class="p-1" style="display: none;">
+                  <video name="video" class="w-100" autoplay></video>
+                  <canvas name="canvas" style="display: none;"></canvas>
+                </div>
+                <div>
+                  <span name="lbl-processing" style="background: navy; color: white; padding: 4px; min-width:100%; font-weight: bold; display: none;">Processing ...</span>
+                </div>
+                <div>
+                  <button name="close" style="width: 100%;">&times; Close</button>
+                </div>
+              </div>
+        </div>
+        <div class="col-3"></div>
     </div>
-    
+<!-- </div> -->
+  <script type="text/javascript">
+  // create QRCodeScanner instance
+  window.qrcodeScanner = new QRCodeScanner({ rootSelector: "#qrcode-scanner" });
 
-
-    
-   
-
+  $(document).on("click", "#btn-open-qrcode-scanner", function(e) {
+    // open QRCodeScanner webcam scanner
+    qrcodeScanner.open((err, result) => {
+      console.log("QRCodeScanner result:", err, result);
+    });
+  });
+  </script>  
 <!--Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
         
-<script>
 
-</script>
 
 </body>
 
