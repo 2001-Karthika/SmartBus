@@ -20,7 +20,12 @@ function get_value(event) {
         if (response.error){
           demo.showNotification("left", "bottom", "Invalid Credentials")
         }
-        else{
+        else if(userType == 1)
+        {
+          window.location.href = '/driver-dashboard'
+        }
+        else 
+        {
           window.location.href = '/welcome'
         }
       })
