@@ -23,7 +23,7 @@ router.get('/login', function (request, response) {
   console.log("first")
   if (request.session.user) {
     // User is already logged in, redirect to dashboard
-    response.redirect('/welcome');
+    response.redirect('/analytics');
   } else {
     // User is not logged in, render login page
     response.render('login/login.ejs');
@@ -35,8 +35,8 @@ router.get('/signup', function (request, response) {
   response.render('signup/signup.ejs');
 });
 
-router.get('/welcome', isLoggedIn, function (req, res) {
-  res.render('admin/welcome.ejs')
+router.get('/analytics', isLoggedIn, function (req, res) {
+  res.render('admin/analytics.ejs')
 })
 
 router.get('/driver-dashboard', isLoggedIn, function (req, res) {
