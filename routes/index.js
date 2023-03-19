@@ -150,6 +150,14 @@ router.post('/bus', async function (req, res) {
   }
 });
 
+router.post('/console', (req, res) => {
+  const consoleValue = req.body.consoleValue;
+  
+  // Use QR data   
+
+  res.send('Received console value');
+});
+
 module.exports = router;
 
 //READ THIS
