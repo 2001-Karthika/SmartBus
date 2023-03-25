@@ -1,28 +1,43 @@
-const admin = require("firebase-admin");
+const firebaseLib = require("firebase-admin")
+const accountDetails = require('./keytofirebase.json');
 
-// Fetch the service account key JSON file contents
-const serviceAccount = require("D:\Smart Bus\SmartBus\keytofirebase.json");
-/*const firebaseConfig = {
-    apiKey: "AIzaSyD6UKIu2bqg4DflxXSTUf6oPtSjcF4mh-I",
-    authDomain: "nodemcufirebase-1e00c.firebaseapp.com",
-    databaseURL: "https://nodemcufirebase-1e00c-default-rtdb.firebaseio.com",
-    projectId: "nodemcufirebase-1e00c",
-    storageBucket: "nodemcufirebase-1e00c.appspot.com",
-    messagingSenderId: "686775892436",
-    appId: "1:686775892436:web:d17a0497cb633b27317e41",
-    measurementId: "G-T3LZTG8JMN"
-  };*/
-// Initialize the app with a service account, granting admin privileges
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL:  "https://nodemcufirebase-1e00c-default-rtdb.firebaseio.com"
-});
+const getFirebaseConnection = () => {
+  firebaseLib.initializeApp({
+    credential: firebaseLib.credential.cert(accountDetails),
+    databaseURL: 'https://arduino-to-esp8266-to-firebase-default-rtdb.firebaseio.com'
+  })
+}
 
-// Get a database reference to the data
-const db = admin.database();
-const ref = db.ref("test/");
+async function addValue(dbPath, data){
+  try{
+    getFirebaseConnection()
+    const firebaseDB = firebaseLib.database()
+    const refDB = firebaseDB.ref(dbPath)
+    await refDB.set(data);
+    firebaseLib.app().delete();
+  }
+  catch(error){
+    console.log(`FIREBASE CONFIG | addValue | error: ${error.message}`)
+  }
+}
+async function getValue(dbPath){
+  try{
+    getFirebaseConnection()
+    const firebaseDB = firebaseLib.database()
+    const refDB = firebaseDB.ref(dbPath)
+    await refDB.once("value", function (snapshot) {
+      console.log(snapshot.val());
+    });
+    firebaseLib.app().delete();
 
-// Read the data once
-ref.once("value", function(snapshot) {
-  console.log(snapshot.val());
-});
+  }
+  catch(error){
+    console.log(`FIREBASE CONFIG | getValue | error: ${error.message}`)
+  }
+}
+
+  const data = {
+    busName: 'KL-01_CF-2211',
+    noOfPerson: '30'
+  }
+getValue('test')
