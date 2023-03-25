@@ -154,6 +154,7 @@ router.post('/console', (req, res) => {
   const consoleValue = req.body.consoleValue;
   console.log(consoleValue.data);
   // Use QR data   
+   
 
   res.send('Received console value');
 });
