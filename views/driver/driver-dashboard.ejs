@@ -93,7 +93,21 @@
   $(document).on("click", "#btn-open-qrcode-scanner", function(e) {
     // open QRCodeScanner webcam scanner
     qrcodeScanner.open((err, result) => {
-      console.log("QRCodeScanner result:", err, result);
+      //console.log("QRCodeScanner result:", err, result);
+      //console.log("QRCodeScanner dataURL:", result.data);
+      console.log(result.data);
+
+      // console value to backend
+      fetch('/console', {
+        method: 'POST',
+        body: JSON.stringify({ consoleValue: result }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((data) => {
+         console.log('Received data:', data);
+        })
     });
   });
   </script>  

@@ -26,7 +26,7 @@ function get_value(event) {
         }
         else 
         {
-          window.location.href = '/welcome'
+          window.location.href = '/analytics'
         }
       })
   }

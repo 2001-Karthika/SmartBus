@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "arduino-to-esp8266-to-firebase",
+  "private_key_id": "4195d26c989141727ecb20152bded319abc55b1b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC9rp8aSHZKedXg\nnSqPRDKxDmJu9v0JOuMF14SmDIMevBtJHvDTkzBRCXyiXef9WEQJMwjHmuI4oo7B\nZysvTmnOGxTdGEhUKaUEFgsmiiAxJeImhSTZOuwwv5nom0pSC6ENaRIZdoY1eR50\n6RCmuJgQwLLMf+NmcOKZFTJNScv2GLAD+mEPciBHIhAwXq+VleQkOAV2y/DBTCVz\nQH50NCPx8EMbfQfTMkaLZSQzjRo5I86W9non/W1Cc50VgeEF2xgta//JriKfuVcr\nRnay1y0omzpxTquQD1mnl0lbRxdSoscCpyAmPu3lkC9NMV1d6zm0qfbyrRy3XFOf\nNM5S7O5lAgMBAAECggEAH16ePHQIcCe3GecUL05pjcOhvtVFIr4k5oXuj6GZG7+j\nSZP+4xbAEl7dyGJ8Z/cthVH13UD9sb0cm9qqly/CKs5qxGfsKlMa0dKtdGm6ijZI\nMPOrFOv8PNGrK/9mqqv2rieW0TQ7XOOTiGU1FkWIDJk52L07x+jaaNPLFmIig6fn\nndVlYqhp1vL8Xpp2TMCerA2g1VuG/uSUOdkvYBGeagrQlz7bWYiYVxABp5yufnJm\nBk6GTS7T3N54vYSMTtatLHYikMzCzgORA0/EjtemijNqdgFT/4v9hb/4YcQHrViD\nh+0RBxt6sUqKKnOjiUkq0wJsaec3Niv2llUN0HEADwKBgQDlcNf0qr3SMzKWAGjw\nY1TQNlQztCx5UZA6vx4w5EYg971IQYQOPuTXz1/3dyUSaVJjz5yyWm34iPgVd497\nrhRMxzEdrFtU1Og33h7JEOlol8d7SeB7KLKnZ7x8LzU9ZVDCtIRd1UpPxvRa8m5T\n3DdYCpf9Y3j0eILTor1RpCqsDwKBgQDTo5XMrVC/s+cVuDyVg75PbDY09mZw0yuf\nWOrl7PeT8zbTpENWs6ieXwuwSDDCJJ1WNozX4gkSW0Glx4Kn9uC9gf/Pa9a6Z+zQ\nxPhZDGmSfvK+VEbr7AV0vRLb9tVc8oYi28SQyDLM/HAHNSD44VtaXh2oEHtnGYPN\nYV2t5N0aSwKBgD7SHs8G0OJ00izv/8uR5u77cSKW+nZdNrhfC80nM2xjaJgYGCgu\nYEoWpZgEL0pTPBPIDIdo6yNZnVODYO3kQ/qhr3kIcBlSEiL51kQHNWFF7YB8QdJ2\n2jOr25fE9TbSPsKQ2o02kRo2x0D/j+W2LhEVFXhze/Kz7F41+NAZuvVRAoGAVD1a\n1Ptvlr6fDpAk3UZxK9/gu7gQEnybcnPMG/T0ntlCS3+opgwg49jlKCez8LLuRXC1\nIwD/p2TXfospQH4N+qCSGBfOgqf3JSohyCAerYcGTCfzitiJW2we45seVj7akWl0\nlkR5pAoe9V96XlYlLJUlrM3SsLkBM3C7/wmH0H0CgYAuF28SC/OVPQuQZ667HyoR\nG4f/00Do9tBeSsuhrPGVJFURodN2XMWyV9WPnfxheJKdAHkujf3Qdz5lq662omKY\nsadAafXYfEDh8vyxKqAsY5fnJCBzLvI9pI5atgK/7YTLVu7EkHn6oJTfJ/paM938\nJ9c0eMVXvGWxZbuMK4CrEQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-s3ewt@arduino-to-esp8266-to-firebase.iam.gserviceaccount.com",
+  "client_id": "107413832984717913764",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-s3ewt%40arduino-to-esp8266-to-firebase.iam.gserviceaccount.com"
+}
