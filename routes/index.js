@@ -4,6 +4,8 @@ const router = express.Router();
 const runQuery = require('../db/runQuery');
 const sendHTTPResponse = require('../lib/sendHTTPResponse')
 const query = require('./query');
+const { v4: uuidv4 } = require('uuid');
+
 
 function isLoggedIn(req, res, next) {
   if (req.session.user) {
@@ -22,6 +24,7 @@ router.get('/', function (request, response) {
 router.get('/login', function (request, response) {
   console.log("first")
   if (request.session.user) {
+
     // User is already logged in, redirect to dashboard
     response.redirect('/analytics');
   } else {
@@ -130,18 +133,21 @@ router.get('/bus-details', isLoggedIn, function (request, res) {
 router.get('/bus', isLoggedIn, async function (request, res) {
   const query = `SELECT * FROM bus`
   const buslist = await runQuery(query)
+  //console.log(buslist)
   sendHTTPResponse.success(res, "Response successfull", buslist);
 });
 
 router.post('/bus', async function (req, res) {
   try{
-    console.log(req.body)
+   console.log(req.body)
   const bus_number = req.body.bus_number 
   const busfrom = req.body.busfrom
   const busto = req.body.busto
- 
-  const query = 'INSERT INTO smartbus.bus (bus_number, busfrom, busto) VALUES (?,?,?);'
-  await runQuery(query,[ bus_number, busfrom,  busto])
+  const uuid = uuidv4()
+  console.log(uuid);
+
+  const query = 'INSERT INTO smartbus.bus (bus_number, busfrom, busto, uuid) VALUES (?,?,?,?);'
+  await runQuery(query,[ bus_number, busfrom,  busto , uuid])
   sendHTTPResponse.success(res, "Bus details added successfully")
   }
   catch (err) {
@@ -150,14 +156,23 @@ router.post('/bus', async function (req, res) {
   }
 });
 
-router.post('/console', (req, res) => {
-  const consoleValue = req.body.consoleValue;
-  console.log(consoleValue.data);
+router.post('/console',  async function(req, res) {
+  try{
+    const consoleValue = req.body.consoleValue.data;
+    const query = 'Select * from bus where uuid= ?'
+    const runquery = await runQuery(query,consoleValue)
+    console.log(runquery)
+    sendHTTPResponse.success(res, "Bus details collected successfully",runquery)
+  }
+  catch (err) {
+    console.log(err.message)
+    sendHTTPResponse.error(res, "Error in collecting data",)
+  } 
+  //console.log(consoleValue.data);
   // Use QR data   
-   
-
-  res.send('Received console value');
+  //res.send('Received console value');
 });
+
 
 module.exports = router;
 
