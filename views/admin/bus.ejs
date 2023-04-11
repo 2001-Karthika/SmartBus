@@ -158,14 +158,13 @@
             const bus_number = document.getElementById("bus_number").value
             const busfrom = document.getElementById("busfrom").value
             const busto = document.getElementById("busto").value
-            
             //Bus db table contents
             if (bus_number == '') demo.showNotification("left", "bottom", "Bus number cant be empty")
             else if (busfrom == '') demo.showNotification("left", "bottom", "Starting point of bus cant be empty")
             else if (busto == '') demo.showNotification("left", "bottom", "Destination cant be empty")
             
             else {
-                const busCredentials = { bus_number, busfrom, busto }
+                const busCredentials = { bus_number, busfrom, busto}
                 fetch('/bus', {
                     method: 'POST',
                     headers: {
