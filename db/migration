@@ -28,6 +28,7 @@ CREATE TABLE
         busfrom text not null ,
         busto text not null,
         uuid text not null,
+        crowd int,
         primary key(id)
     )
 
