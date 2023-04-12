@@ -27,6 +27,7 @@ CREATE TABLE
         bus_number text not null,
         busfrom text not null ,
         busto text not null,
+        uuid text not null,
         primary key(id)
     )
 
