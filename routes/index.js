@@ -50,6 +50,13 @@ router.get('/qrscanner', isLoggedIn,function (req, res) {
   res.render('driver/qrscanner.ejs');
 })
 
+router.get('/passenger-dashboard', isLoggedIn,function (req, res) {
+  res.render('passenger/passenger-dashboard.ejs');
+})
+
+router.get('/route-selection', isLoggedIn,function (req, res) {
+  res.render('passenger/route-selection.ejs');
+})
 
 router.post('/signup', async function (request, response) {
   const username = request.body.username
@@ -173,6 +180,20 @@ router.post('/console',  async function(req, res) {
   //res.send('Received console value');
 });
 
+router.post('/passenger-dashboard',  async function(req, res) {
+  try{
+    const fromLocation = req.body.from-location;
+    const toLocation = req.body.to-location;
+    const query = 'Select * from bus where busfrom= ? and busto= ?'
+    const runquery = await runQuery(query,[fromLocation, toLocation])
+    console.log(runquery)
+    sendHTTPResponse.success(res, "Bus selected successfully",runquery)
+  }
+  catch (err) {
+    console.log(err.message)
+    sendHTTPResponse.error(res, "Error in selecting location",)
+  } 
+});
 
 module.exports = router;
 
