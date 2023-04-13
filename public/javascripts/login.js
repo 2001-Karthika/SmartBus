@@ -24,6 +24,10 @@ function get_value(event) {
         {
           window.location.href = '/driver-dashboard'
         }
+        else if(userType == 2)
+        {
+          window.location.href = '/passenger-dashboard'
+        }
         else 
         {
           window.location.href = '/analytics'
