@@ -49,21 +49,18 @@
         <label for="from-location" class="form-label"></label>
         <select id="from-location" name="from-location" class="form-control" required>
           <option value="" disabled selected hidden>From</option>
-          <option value="0">Poojappura</option>
-          <option value="1">Eastfort</option>
-          <option value="2">Palayam</option>
-          <option value="3">Pattom</option>
+          <% busFrom.map((location, index)=>{ %>
+          <option value="<%=location.busfrom %>"><%=location.busfrom%></option>
+          <% })%>
         </select>
       </div>
       <div>
         <label for="to-location" class="form-label"></label>
         <select id="to-location" name="to-location" class="form-control" required>
           <option value="" disabled selected hidden>To</option>
-          <option value="0">Poojappura</option>
-          <option value="1">Eastfort</option>
-          <option value="2">Palayam</option>
-          <option value="3">Pattom</option>
-          <option value="4">Thampanoor</option>
+          <% busTo.map((location, index)=>{ %>
+            <option value="<%=location.busto %>"><%=location.busto%></option>
+            <% })%>
         </select>
       </div>
   
@@ -74,7 +71,7 @@
 
           <!-- Show bus details -->
       
-      <div class="container mt-5">
+      <div class="container mt-5" id="passenger-bus-list-parent" style="display: none;">
       <h3 class="text-center">BUS LIST</h3>
       <div class="table-responsive dataTables_wrapper dt-bootstrap4">
           <table id="bus-list" class="table responsive table-hover" style="width:100%">
@@ -90,44 +87,6 @@
       integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
       crossorigin="anonymous"></script>
   <script>
-      try {
-          const campaignTable = $('#bus-list').DataTable({
-              ajax: {
-                  url: '/bus',
-                  type: 'GET',
-                  oLanguage: {
-                      sEmptyTable: "No Buses available"
-                  },
-                  dataSrc: function (json) {
-                      return json.data;
-                  }
-              },
-              stateSave: true,
-              pageLength: 25,
-              paging: true,
-              autoWidth: true,
-              deferRender: true,
-              stateSave: true,
-              order: [[0, "desc"]],
-              columns: [
-                  { data: 'id', title: 'ID', className: "noVis" },
-                  { data: 'bus_number', title: 'Bus Number' },
-                  { data: 'busfrom', title: 'From Location' },
-                  { data: 'busto', title: 'To Location' },
-                  {
-          data: 'id',
-          title: 'Actions',
-          render: function (data, type, row, meta) {
-            return '<button type="button" class="btn btn-sm btn-simple btn-danger" onClick="setDriverInactive(' + data + ')">Inactive</button> ';
-          }
-        }
-              ]
-          });
-      }
-      catch (error) {
-          console.log(error)
-      }
-
       function addBus() {
           const busNumber = document.getElementById("bus_number").value
           const fromLocation = document.getElementById("busfrom").value

@@ -31,7 +31,7 @@ router.get('/login', function (request, response) {
     // User is not logged in, render login page
     response.render('login/login.ejs');
   }
-  
+
 });
 
 router.get('/signup', function (request, response) {
@@ -46,15 +46,17 @@ router.get('/driver-dashboard', isLoggedIn, function (req, res) {
   res.render('driver/driver-dashboard.ejs')
 })
 
-router.get('/qrscanner', isLoggedIn,function (req, res) {
+router.get('/qrscanner', isLoggedIn, function (req, res) {
   res.render('driver/qrscanner.ejs');
 })
 
-router.get('/passenger-dashboard', isLoggedIn,function (req, res) {
-  res.render('passenger/passenger-dashboard.ejs');
+router.get('/passenger-dashboard',isLoggedIn , async function (req, res) {
+  const busFrom = (await runQuery(query.getDistinctBusFrom()))
+  const busTo = (await runQuery(query.getDistinctBusTo()))
+  res.render('passenger/passenger-dashboard.ejs', { busFrom, busTo });
 })
 
-router.get('/route-selection', isLoggedIn,function (req, res) {
+router.get('/route-selection', isLoggedIn, function (req, res) {
   res.render('passenger/route-selection.ejs');
 })
 
@@ -114,18 +116,18 @@ router.get('/driver', isLoggedIn, async function (request, res) {
 });
 
 router.post('/driver', async function (req, res) {
-  try{
+  try {
     console.log(req.body)
-  const username = req.body.username 
-  const password = req.body.password
-  const adminID = ~~ req.body.adminID
-  const mobile = req.body.mobile
-  const email = req.body.email
-  const name = req.body.name
-  const userType = 1
-  const query = 'INSERT INTO smartbus.driver (name, username, password, user_type, email, ph_num, admin_id) VALUES (?,?,?,?,?,?,?);'
-  await runQuery(query,[ name, username,  password, userType, email, mobile,  adminID])
-  sendHTTPResponse.success(res, "Driver details added successfully")
+    const username = req.body.username
+    const password = req.body.password
+    const adminID = ~~req.body.adminID
+    const mobile = req.body.mobile
+    const email = req.body.email
+    const name = req.body.name
+    const userType = 1
+    const query = 'INSERT INTO smartbus.driver (name, username, password, user_type, email, ph_num, admin_id) VALUES (?,?,?,?,?,?,?);'
+    await runQuery(query, [name, username, password, userType, email, mobile, adminID])
+    sendHTTPResponse.success(res, "Driver details added successfully")
   }
   catch (err) {
     console.log(err.message)
@@ -145,17 +147,17 @@ router.get('/bus', isLoggedIn, async function (request, res) {
 });
 
 router.post('/bus', async function (req, res) {
-  try{
-   console.log(req.body)
-  const bus_number = req.body.bus_number 
-  const busfrom = req.body.busfrom
-  const busto = req.body.busto
-  const uuid = uuidv4()
-  console.log(uuid);
+  try {
+    console.log(req.body)
+    const bus_number = req.body.bus_number
+    const busfrom = req.body.busfrom
+    const busto = req.body.busto
+    const uuid = uuidv4()
+    console.log(uuid);
 
-  const query = 'INSERT INTO smartbus.bus (bus_number, busfrom, busto, uuid) VALUES (?,?,?,?);'
-  await runQuery(query,[ bus_number, busfrom,  busto , uuid])
-  sendHTTPResponse.success(res, "Bus details added successfully")
+    const query = 'INSERT INTO smartbus.bus (bus_number, busfrom, busto, uuid) VALUES (?,?,?,?);'
+    await runQuery(query, [bus_number, busfrom, busto, uuid])
+    sendHTTPResponse.success(res, "Bus details added successfully")
   }
   catch (err) {
     console.log(err.message)
@@ -163,36 +165,36 @@ router.post('/bus', async function (req, res) {
   }
 });
 
-router.post('/console',  async function(req, res) {
-  try{
+router.post('/console', async function (req, res) {
+  try {
     const consoleValue = req.body.consoleValue.data;
     const query = 'Select * from bus where uuid= ?'
-    const runquery = await runQuery(query,consoleValue)
+    const runquery = await runQuery(query, consoleValue)
     console.log(runquery)
-    sendHTTPResponse.success(res, "Bus details collected successfully",runquery)
+    sendHTTPResponse.success(res, "Bus details collected successfully", runquery)
   }
   catch (err) {
     console.log(err.message)
     sendHTTPResponse.error(res, "Error in collecting data",)
-  } 
+  }
   //console.log(consoleValue.data);
   // Use QR data   
   //res.send('Received console value');
 });
 
-router.post('/passenger-dashboard',  async function(req, res) {
-  try{
-    const fromLocation = req.body.from-location;
-    const toLocation = req.body.to-location;
+
+router.get('/passenger-bus-details', async function (req, res) {
+  try {
+    const fromLocation = req.query.from
+    const toLocation = req.query.to
     const query = 'Select * from bus where busfrom= ? and busto= ?'
-    const runquery = await runQuery(query,[fromLocation, toLocation])
-    console.log(runquery)
-    sendHTTPResponse.success(res, "Bus selected successfully",runquery)
+    const result = await runQuery(query, [fromLocation, toLocation])
+    sendHTTPResponse.success(res, "Bus selected successfully", result)
   }
   catch (err) {
     console.log(err.message)
     sendHTTPResponse.error(res, "Error in selecting location",)
-  } 
+  }
 });
 
 module.exports = router;
