@@ -20,7 +20,6 @@ router.get('/', function (request, response) {
 });
 
 router.get('/login', function (request, response) {
-  console.log("first")
   if (request.session.user) {
     // User is already logged in, redirect to dashboard
     response.redirect('/analytics');
@@ -85,7 +84,6 @@ router.post("/login", async function (req, res) {
     query = 'SELECT * FROM passenger WHERE username = ? '
   const resp = await runQuery(query, [username])
   const dbPassword = resp[0]?.password
-  console.log(dbPassword, password)
   if (dbPassword == password) {
     sendHTTPResponse.success(res, "Response successfull")
   }
@@ -114,7 +112,6 @@ router.get('/driver', isLoggedIn, async function (request, res) {
 
 router.post('/driver', async function (req, res) {
   try {
-    console.log(req.body)
     const username = req.body.username
     const password = req.body.password
     const adminID = ~~req.body.adminID
@@ -144,12 +141,10 @@ router.get('/bus', isLoggedIn, async function (request, res) {
 
 router.post('/bus', async function (req, res) {
   try {
-    console.log(req.body)
     const bus_number = req.body.bus_number
     const busfrom = req.body.busfrom
     const busto = req.body.busto
     const uuid = uuidv4()
-    console.log(uuid);
 
     const query = 'INSERT INTO smartbus.bus (bus_number, busfrom, busto, uuid) VALUES (?,?,?,?);'
     await runQuery(query, [bus_number, busfrom, busto, uuid])
@@ -163,17 +158,15 @@ router.post('/bus', async function (req, res) {
 
 router.post('/console', async function (req, res) {
   try {
-    const consoleValue = req.body.consoleValue.data;
+    const uniqueID = req.body.consoleValue.data
     const query = 'Select * from smartbus.bus where uuid= ?'
-    const runquery = await runQuery(query, consoleValue)
-    console.log(runquery)
-    sendHTTPResponse.success(res, "Bus details collected successfully", runquery)
+    const result = await runQuery(query, uniqueID)
+    sendHTTPResponse.success(res, "Bus details collected successfully", result)
   }
   catch (err) {
     console.log(err.message)
     sendHTTPResponse.error(res, "Error in collecting data",)
   }
-  //console.log(consoleValue.data);
   // Use QR data   
    
 });
