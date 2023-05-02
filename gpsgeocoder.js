@@ -9,7 +9,7 @@ const config = require("./firebasemysql");
 const getFirebaseConnection = () => {
   firebaseLib.initializeApp({
     credential: firebaseLib.credential.cert(accountDetails),
-    databaseURL:  "https://esp8266-cd1d4-default-rtdb.firebaseio.com"
+    databaseURL: "https://esp8266-cd1d4-default-rtdb.firebaseio.com"
   })
 }
 // Create MySQL connection
@@ -29,7 +29,7 @@ const main = () => {
 
   getFirebaseConnection()
   const dbPath = 'd74acef3-7630-484c-b82f-8908bef34c50'
-  
+
   const options = {
     provider: 'openstreetmap'
   };
@@ -48,38 +48,38 @@ const main = () => {
         try {
           const result = await geocoder.reverse({ lat: latitude, lon: longitude });
           // console.log(result); 
-          const loc =  result[0].formattedAddress.split(',')[0];
-          console.log(loc); 
+          const loc = result[0].formattedAddress.split(',')[0];
+          console.log(loc);
 
-          return loc; 
+          return loc;
         } catch (error) {
           console.error(error);
         }
-      }      
+      }
       const update = async () => {
         try {
-        const currentLoc = await getLocFromGeocoder(latitude,longitude);
-        const values = [noOfPerson,currentLoc,dbPath];
-        console.log(values);
-        const query = `Update bus set crowd = ? , currentLoc = ? where uuid = ?`;
-        // await runQuery(query,values)
-        //   console.log("Updated successfully")
-        connection.query(query, values, (err, results) => {
-          if (err) {
-            console.error(`Error inserting data into table:`, err);
-          } else {
-            console.log(`Inserted data into table`);
-          }
-        });
-      }catch (err) {
+          const currentLoc = await getLocFromGeocoder(latitude, longitude);
+          const values = [noOfPerson, currentLoc, dbPath];
+          console.log(values);
+          const query = `Update bus set crowd = ? , currentLoc = ? where uuid = ?`;
+          // await runQuery(query,values)
+          //   console.log("Updated successfully")
+          connection.query(query, values, (err, results) => {
+            if (err) {
+              console.error(`Error inserting data into table:`, err);
+            } else {
+              console.log(`Inserted data into table`);
+            }
+          });
+        } catch (err) {
           console.log(err.message)
         }
-       
-      };
-      update(); 
 
-      }) 
-    
+      };
+      update();
+
+    })
+
 };
 
 main();
