@@ -116,8 +116,9 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
     <script>
+        let campaignTable;
         try {
-            const campaignTable = $('#bus-list').DataTable({
+             campaignTable = $('#bus-list').DataTable({
                 ajax: {
                     url: '/bus',
                     type: 'GET',
@@ -144,7 +145,7 @@
             data: 'id',
             title: 'Actions',
             render: function (data, type, row, meta) {
-              return '<button type="button" class="btn btn-sm btn-simple btn-danger" onClick="setBusInactive(' + data + ')">Inactive</button> ';
+              return `<button type="button" class="btn btn-sm btn-simple btn-danger" onClick="confirmDeactivation(${data})">Inactive</button> `;
             }
           }
                 ]
@@ -184,6 +185,29 @@
                             setTimeout(() => { location.reload() }, 1000);
                         }
                     })
+            }
+        }
+
+        function setBusInactive(busId) {
+            $.ajax({
+             url: '/bus/' + busId + '/inactive',
+             type: 'PUT',
+             success: function () {
+                    campaignTable.ajax.reload();
+                    window.location.reload();
+                },                     
+             error: function(error) {
+                 console.log(error);
+                }
+            });
+        }
+
+        function confirmDeactivation(busId) {
+            var confirmation = confirm("This action is irreversible. Are you sure you want to deactivate?");
+            if (confirmation) {
+                setBusInactive(busId)
+            } else {
+                console.log("Deactivation cancelled");
             }
         }
 

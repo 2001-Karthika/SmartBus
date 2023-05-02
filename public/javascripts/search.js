@@ -33,6 +33,23 @@ function get_search(event) {
                 { data: 'bus_number', title: 'Bus Number' },
                 { data: 'busfrom', title: 'From Location' },
                 { data: 'busto', title: 'To Location' },
+                { data: 'status', title: 'Status',
+                  render: function(data, type, row, meta) {
+                   return data === 1 ? 'Running' : 'Not Running';
+                  } 
+                },
+                { data: 'crowd', title: 'Density Range',
+                  render: function(data, type, row, meta) {
+                    if(data>50)
+                      return 'High';
+                    else if (data>25 && data <40)
+                      return 'Medium';
+                    else
+                      return 'Low';
+                 } 
+                },
+                { data: 'currentLoc', title: 'Current Location' },
+
               ]
             });
             busListPassenger.destroy();

@@ -39,12 +39,12 @@ async function getValue(dbPath){
 }
 
   const data = {
-    latitude : '8.40',
-    longitude : '76.909',
-    noOfPerson: '25'
+    latitude : '9.40',
+    longitude : '96.909',
+    noOfPerson: '55'
   }
-getValue('d74acef3-7630-484c-b82f-8908bef34c502')
-//getFirebaseConnection()
+//getValue('9fc21794-bca3-4f53-8335-d8ae935ef1b4')
+getFirebaseConnection()
 
 // Create MySQL connection
 const connection = mysql.createConnection(config.mysql);
@@ -58,18 +58,33 @@ connection.connect((err) => {
   }
 });
 
+const options = {
+  provider: 'openstreetmap'
+};
+const geocoder = NodeGeocoder(options);
+
 
 // Listen for changes in Firebase database
 firebaseLib.database().ref().on("value", (snapshot) => {
   const data = snapshot.val();
-
   // Loop through each data item and update the respective MySQL table
   Object.keys(data).forEach((key) => {
     const table = key;
     const items = data[key];
-      const values = [items.noOfPerson, table];
-      const sql = `Update bus set crowd = ? where uuid = ?`;
-
+    async function getLocFromGeocoder(latitude, longitude) {
+      try {
+        const result = await geocoder.reverse({ lat: latitude, lon: longitude });
+        const loc =  result[0].formattedAddress.split(',')[0];
+        // console.log(loc); 
+        return loc; 
+      } catch (error) {
+        console.error(error);
+      }
+    }
+      const currentLoc = getLocFromGeocoder(items.latitude, items.longitude);
+      const values = [items.noOfPerson,currentLoc,table];
+      // console.log(currentLoc)
+      const sql = `Update bus set crowd = ? and currentLoc = '?' where uuid = ?`;
       connection.query(sql, values, (err, results) => {
         if (err) {
           console.error(`Error inserting data into ${table} table:`, err);

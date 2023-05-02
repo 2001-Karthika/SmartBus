@@ -4,6 +4,7 @@ const router = express.Router();
 const runQuery = require('../db/runQuery');
 const sendHTTPResponse = require('../lib/sendHTTPResponse')
 const query = require('./query');
+const { v4: uuidv4 } = require('uuid');
 
 function isLoggedIn(req, res, next) {
   if (req.session.user) {
@@ -107,7 +108,7 @@ router.get('/driver-details', isLoggedIn, function (request, res) {
 
 
 router.get('/driver', isLoggedIn, async function (request, res) {
-  const query = `SELECT * FROM driver`
+  const query = `SELECT * FROM driver where status = 1`
   const driverlist = await runQuery(query)
   sendHTTPResponse.success(res, "Response successfull", driverlist);
 });
@@ -122,8 +123,9 @@ router.post('/driver', async function (req, res) {
     const email = req.body.email
     const name = req.body.name
     const userType = 1
-    const query = 'INSERT INTO smartbus.driver (name, username, password, user_type, email, ph_num, admin_id) VALUES (?,?,?,?,?,?,?);'
-    await runQuery(query, [name, username, password, userType, email, mobile, adminID])
+    const status = 1
+    const query = 'INSERT INTO smartbus.driver (name, username, password, user_type, email, ph_num, admin_id, status) VALUES (?,?,?,?,?,?,?,?);'
+    await runQuery(query, [name, username, password, userType, email, mobile, adminID , status])
     sendHTTPResponse.success(res, "Driver details added successfully")
   }
   catch (err) {
@@ -132,12 +134,25 @@ router.post('/driver', async function (req, res) {
   }
 });
 
+router.put('/driver/:id/inactive', function(req, res) {
+  try{
+   const driverId = req.params.id;
+   const query = 'UPDATE driver SET status = 0 WHERE id = ?'
+   runQuery(query, [driverId])
+   res.sendStatus(200); 
+  }
+  catch (err) {
+    console.log(err.message)
+    res.sendStatus(500); 
+  }
+});
+
 router.get('/bus-details', isLoggedIn, function (request, res) {
   res.render('admin/bus.ejs')
 });
 
 router.get('/bus', isLoggedIn, async function (request, res) {
-  const query = `SELECT * FROM bus`
+  const query = `SELECT * FROM bus where status = 1`
   const buslist = await runQuery(query)
   sendHTTPResponse.success(res, "Response successfull", buslist);
 });
@@ -149,15 +164,29 @@ router.post('/bus', async function (req, res) {
     const busfrom = req.body.busfrom
     const busto = req.body.busto
     const uuid = uuidv4()
+    const status = 1
     console.log(uuid);
 
-    const query = 'INSERT INTO smartbus.bus (bus_number, busfrom, busto, uuid) VALUES (?,?,?,?);'
-    await runQuery(query, [bus_number, busfrom, busto, uuid])
+    const query = 'INSERT INTO smartbus.bus (bus_number, busfrom, busto, uuid,status) VALUES (?,?,?,?,?);'
+    await runQuery(query, [bus_number, busfrom, busto, uuid, status])
     sendHTTPResponse.success(res, "Bus details added successfully")
   }
   catch (err) {
     console.log(err.message)
     sendHTTPResponse.error(res, "Error in adding credentials",)
+  }
+});
+
+router.put('/bus/:id/inactive', function(req, res) {
+  try{
+   const busId = req.params.id;
+   const query = 'UPDATE bus SET status = 0 WHERE id = ?'
+   runQuery(query, [busId])
+   res.sendStatus(200); 
+  }
+  catch (err) {
+    console.log(err.message)
+    res.sendStatus(500); 
   }
 });
 
@@ -176,15 +205,13 @@ router.post('/console', async function (req, res) {
   //console.log(consoleValue.data);
   // Use QR data   
    
-
-  res.send('Received console value');
 });
 
 router.get('/passenger-bus-details', async function (req, res) {
   try {
     const fromLocation = req.query.from
     const toLocation = req.query.to
-    const query = 'Select * from bus where busfrom= ? and busto= ?'
+    const query = 'Select * from bus where busfrom= ? and busto= ? '
     const result = await runQuery(query, [fromLocation, toLocation])
     sendHTTPResponse.success(res, "Bus selected successfully", result)
   }
