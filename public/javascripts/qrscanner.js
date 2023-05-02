@@ -179,3 +179,58 @@ class QRCodeScanner {
   }
 
 };
+
+function qrcodeScanner(event) {
+
+  console.log = function(uuid)
+{
+    window.$log = uuid;
+};
+
+  event.preventDefault();
+   {
+    fetch(`/driver-bus-details?from=${uuid}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        if (response.error) {
+          demo.showNotification("left", "bottom", "Invalid Credentials")
+        }
+        else {
+          try {
+            document.getElementById("driver-bus-list-parent").style.display = "block"
+            const busChoosen = $('#bus-choosen').DataTable({
+              data: response.data,
+              stateSave: true,
+              pageLength: 25,
+              paging: true,
+              autoWidth: true,
+              deferRender: true,
+              stateSave: true,
+              order: [[0, "desc"]],
+              columns: [
+                { data: 'bus_number', title: 'Bus Number' },
+                { data: 'busfrom', title: 'From Location' },
+                { data: 'busto', title: 'To Location' },
+                {
+                  data: 'id',
+                  title: 'Status',
+                  render: function (data, type, row, meta) {
+                    return '<button type="button" class="btn btn-sm btn-simple btn-danger" onClick="setBusInactive(' + data + ')">Inactive</button> ';
+                  }}
+              ]
+            });
+            busChoosen.destroy();
+          }
+          catch (error) {
+            console.log(error)
+          }
+        }
+      })
+  }
+
+}

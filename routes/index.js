@@ -164,7 +164,7 @@ router.post('/bus', async function (req, res) {
 router.post('/console', async function (req, res) {
   try {
     const consoleValue = req.body.consoleValue.data;
-    const query = 'Select * from bus where uuid= ?'
+    const query = 'Select * from smartbus.bus where uuid= ?'
     const runquery = await runQuery(query, consoleValue)
     console.log(runquery)
     sendHTTPResponse.success(res, "Bus details collected successfully", runquery)
@@ -176,8 +176,6 @@ router.post('/console', async function (req, res) {
   //console.log(consoleValue.data);
   // Use QR data   
    
-
-  res.send('Received console value');
 });
 
 router.get('/passenger-bus-details', async function (req, res) {
@@ -191,6 +189,19 @@ router.get('/passenger-bus-details', async function (req, res) {
   catch (err) {
     console.log(err.message)
     sendHTTPResponse.error(res, "Error in selecting location",)
+  }
+});
+
+router.get('/driver-bus-details', async function (req, res) {
+  try{
+    const uuid = req.query.uuid
+    const query = 'Select * from bus where uuid= ?'
+    const result = await runQuery(query, uuid)
+    sendHTTPResponse.success(res, "Bus chossen successfully", result)
+  }
+  catch (err) {
+    console.log(err.message)
+    sendHTTPResponse.error(res, "Error in selecting bus",)
   }
 });
 
