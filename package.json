@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "nodemon app.js",
-    "socket": "nodemon socketServer.js"
+    "socket": "nodemon socketServer.js",
+    "callbackService": "nodemon gpsgeocoder.js"
   },
   "dependencies": {
     "body-parser": "^1.20.2",

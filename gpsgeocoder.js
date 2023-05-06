@@ -10,9 +10,7 @@ const getFirebaseConnection = () => {
   })
 }
 
-const main = () => {
-
-  getFirebaseConnection()
+const callbackService = () => {
   const dbPath = 'd74acef3-7630-484c-b82f-8908bef34c50'
 
   const options = {
@@ -55,5 +53,11 @@ const main = () => {
     })
 
 };
+const main = () =>{
+  getFirebaseConnection()
+  setInterval(()=>{
+    callbackService()
+  }, 3000)
+}
+main()
 
-main();
