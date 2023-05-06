@@ -1,4 +1,3 @@
-const { request } = require('express');
 const express = require('express');
 const router = express.Router();
 const runQuery = require('../db/runQuery');
@@ -37,6 +36,27 @@ router.get('/analytics', isLoggedIn, function (req, res) {
 
 router.get('/driver-dashboard', isLoggedIn, function (req, res) {
   res.render('driver/driver-dashboard.ejs')
+})
+
+router.get('/driver-home', async function(req, res) {
+  console.log(req.session.userID)
+  const query = 'Select * from smartbus.bus where id=?;'
+  const result = await runQuery(query, req.session.userID)
+  console.log({driverDetails : result[0].busfrom})
+  res.render('driver/driver-home.ejs',{busfrom : result[0].busfrom, busto : result[0].busto, busNo : result[0].bus_number})
+})
+router.post('/bus-status', async function(req, res) {
+  try{
+    const busID = req.session.userID
+    const status = Boolean(req.body.isBusRunning) ? '1' : '0'
+    const query = 'update bus set status=? where id=?;'
+    await runQuery(query, [status, busID])
+    sendHTTPResponse.success(res, "Status Updated")
+  }
+  catch (err) {
+    console.log(err.message)
+    sendHTTPResponse.error(res, "Error updating status")
+  }
 })
 
 router.get('/qrscanner', isLoggedIn, function (req, res) {
@@ -149,6 +169,7 @@ router.post('/bus', async function (req, res) {
     const busfrom = req.body.busfrom
     const busto = req.body.busto
     const uuid = uuidv4()
+    const status = 1
     const query = 'INSERT INTO smartbus.bus (bus_number, busfrom, busto, uuid,status) VALUES (?,?,?,?,?);'
     await runQuery(query, [bus_number, busfrom, busto, uuid, status])
     sendHTTPResponse.success(res, "Bus details added successfully")
@@ -177,12 +198,15 @@ router.post('/console', async function (req, res) {
     const uniqueID = req.body.consoleValue.data
     const query = 'Select * from smartbus.bus where uuid= ?'
     const result = await runQuery(query, uniqueID)
+    req.session.userID = result[0].id
     sendHTTPResponse.success(res, "Bus details collected successfully", result)
   }
   catch (err) {
     console.log(err.message)
     sendHTTPResponse.error(res, "Error in collecting data",)
-  }   
+  }
+  // Use QR data   
+   
 });
 
 router.get('/passenger-bus-details', async function (req, res) {
@@ -213,11 +237,4 @@ router.get('/driver-bus-details', async function (req, res) {
 });
 
 module.exports = router;
-
-//READ THIS
-// sendHTTPResponse has two sub function
-// 1. success which take parameter (response, message, data, statusCode)
-// response mandatory field others are optional fields
-// 2. error 
-// response mandatory field others are optional fields
 

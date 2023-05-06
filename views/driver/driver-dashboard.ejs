@@ -52,7 +52,7 @@ src="https://cdn.datatables.net/v/bs4/dt-1.10.20/af-2.3.4/b-1.6.5/b-colvis-1.6.5
             </div>
         </div>
     </nav>
-<div class="container">
+<div class="container" id="parent-qr-scan-container">
     <div class="row">
     <h1 class="text-center">Scan QR Code</h1>
     <h5 class="text-center"><button id="btn-open-qrcode-scanner" style="background-color: #00631b; color: aliceblue;" class="text-center p-1">Click here to Scan &nbsp; <i class="fa fa-camera"></i></button></h5>
@@ -98,19 +98,13 @@ src="https://cdn.datatables.net/v/bs4/dt-1.10.20/af-2.3.4/b-1.6.5/b-colvis-1.6.5
           </table>
       </div>
   </div>
-<!-- </div> -->
+
   <script type="text/javascript">
-  // create QRCodeScanner instance
   window.qrcodeScanner = new QRCodeScanner({ rootSelector: "#qrcode-scanner" });
 
   $(document).on("click", "#btn-open-qrcode-scanner", function(e) {
-    // open QRCodeScanner webcam scanner
     qrcodeScanner.open((err, result) => {
-      //console.log("QRCodeScanner result:", err, result);
-      //console.log("QRCodeScanner dataURL:", result.data);
       console.log(result.data);
-
-      // console value to backend
       fetch('/console', {
         method: 'POST',
         body: JSON.stringify({ consoleValue: result }),
@@ -121,27 +115,10 @@ src="https://cdn.datatables.net/v/bs4/dt-1.10.20/af-2.3.4/b-1.6.5/b-colvis-1.6.5
       .then((response) => response.json())
         .then((response) => {
         if (response.error) {
-          demo.showNotification("left", "bottom", "Invalid Credentials")
+          demo.showNotification("left", "bottom", "Invalid QR Code")
         }
         else {
-          console.log(response.data)
-            document.getElementById("driver-bus-list-parent").style.display = "block"
-              $('#driver-bus-list').DataTable({
-              data: response.data,
-              stateSave: true,
-              pageLength: 25,
-              paging: true,
-              autoWidth: true,
-              deferRender: true,
-              stateSave: true,
-              order: [[0, "desc"]],
-              columns: [
-                { data: 'bus_number', title: 'Bus Nuamber' },
-                { data: 'busfrom', title: 'From Location' },
-                { data: 'busto', title: 'To Location' },
-              ]
-            })
-            console.log($('#driver-bus-list').DataTable)
+          window.location.href = '/driver-home'
         }
       })
     });
