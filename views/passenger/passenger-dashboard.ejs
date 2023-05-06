@@ -17,8 +17,10 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <!-- Datatable -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.20/af-2.3.4/b-1.6.5/b-colvis-1.6.5/b-flash-1.6.5/b-print-1.6.5/fc-3.3.0/fh-3.1.6/kt-2.5.1/r-2.2.3/rg-1.1.1/sc-2.0.1/sp-1.1.0/sl-1.3.1/datatables.min.css" />
-    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.20/af-2.3.4/b-1.6.5/b-colvis-1.6.5/b-flash-1.6.5/b-print-1.6.5/fc-3.3.0/fh-3.1.6/kt-2.5.1/r-2.2.3/rg-1.1.1/sc-2.0.1/sp-1.1.0/sl-1.3.1/datatables.min.js"></script>
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/v/bs4/dt-1.10.20/af-2.3.4/b-1.6.5/b-colvis-1.6.5/b-flash-1.6.5/b-print-1.6.5/fc-3.3.0/fh-3.1.6/kt-2.5.1/r-2.2.3/rg-1.1.1/sc-2.0.1/sp-1.1.0/sl-1.3.1/datatables.min.css" />
+    <script type="text/javascript"
+        src="https://cdn.datatables.net/v/bs4/dt-1.10.20/af-2.3.4/b-1.6.5/b-colvis-1.6.5/b-flash-1.6.5/b-print-1.6.5/fc-3.3.0/fh-3.1.6/kt-2.5.1/r-2.2.3/rg-1.1.1/sc-2.0.1/sp-1.1.0/sl-1.3.1/datatables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" />
 </head>
@@ -35,91 +37,95 @@
             </a>
             <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <a class="nav-link" href="/logout">Log Out</a>
+                    <a class="nav-link" href="/logout">Log Out</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
-        
-  <div class="container-fluid">
-    <form class="mx-auto">
-      <h4 class="text-center">SEARCH BUS</h4>
-      <div>
-        <label for="from-location" class="form-label"></label>
-        <select id="from-location" name="from-location" class="form-control" required>
-          <option value="" disabled selected hidden>From</option>
-          <% busFrom.map((location, index)=>{ %>
-          <option value="<%=location.busfrom %>"><%=location.busfrom%></option>
-          <% })%>
-        </select>
-      </div>
-      <div>
-        <label for="to-location" class="form-label"></label>
-        <select id="to-location" name="to-location" class="form-control" required>
-          <option value="" disabled selected hidden>To</option>
-          <% busTo.map((location, index)=>{ %>
-            <option value="<%=location.busto %>"><%=location.busto%></option>
-            <% })%>
-        </select>
-      </div>
-  
 
-      <button class="btn btn-primary mt-3" id="submit-login" onclick="get_search(event)">Search</button>
-    </form>
-  </div>
+    <div class="container-fluid">
+        <form class="mx-auto">
+            <h4 class="text-center">SEARCH BUS</h4>
+            <div>
+                <label for="from-location" class="form-label"></label>
+                <select id="from-location" name="from-location" class="form-control" required>
+                    <option value="" disabled selected hidden>From</option>
+                    <% busFrom.map((location, index)=>{ %>
+                        <option value="<%=location.busfrom %>">
+                            <%=location.busfrom%>
+                        </option>
+                        <% })%>
+                </select>
+            </div>
+            <div>
+                <label for="to-location" class="form-label"></label>
+                <select id="to-location" name="to-location" class="form-control" required>
+                    <option value="" disabled selected hidden>To</option>
+                    <% busTo.map((location, index)=>{ %>
+                        <option value="<%=location.busto %>">
+                            <%=location.busto%>
+                        </option>
+                        <% })%>
+                </select>
+            </div>
 
-          <!-- Show bus details -->
-      
-      <div class="container mt-5" id="passenger-bus-list-parent" style="display: none;">
-      <h3 class="text-center">BUS LIST</h3>
-      <div class="table-responsive dataTables_wrapper dt-bootstrap4">
-          <table id="bus-list" class="table responsive table-hover" style="width:100%">
-          </table>
-      </div>
-      </div>
-      </div>
-      
-      
-      
-      
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-      crossorigin="anonymous"></script>
-  <script>
-      function addBus() {
-          const busNumber = document.getElementById("bus_number").value
-          const fromLocation = document.getElementById("busfrom").value
-          const toLocation = document.getElementById("busto").value
-          if (busNumber == '') demo.showNotification("left", "bottom", "Bus Number cant be empty")
-          else if (fromLocation == '') demo.showNotification("left", "bottom", "from Location cant be empty")
-          else if (toLocation == '') demo.showNotification("left", "bottom", "to Location cant be empty")
-          else {
-              const driverCredentials = { busNumber, fromLocation, toLocation }
-              fetch('/bus', {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify(driverCredentials)
-              })
-                  .then((response) => response.json())
-                  .then((response) => {
-                      if (response.error) {
-                          demo.showNotification("left", "bottom", response.message);
-                      }
-                      else {
-                          document.getElementById('add-bus').style.display = 'none'
-                          demo.showNotification("left", "bottom", response.message);
-                          setTimeout(() => { location.reload() }, 1000);
-                      }
-                  })
-          }
-      }
 
-  </script>
-      </body>
-      </html>
+            <button class="btn btn-primary mt-3" id="submit-login" onclick="get_search(event)">Search</button>
+        </form>
+    </div>
+
+    <!-- Show bus details -->
+
+    <div class="container mt-5" id="passenger-bus-list-parent" style="display: none;">
+        <h3 class="text-center">BUS LIST</h3>
+        <div class="table-responsive dataTables_wrapper dt-bootstrap4">
+            <table id="bus-list" class="table responsive table-hover" style="width:100%">
+            </table>
+        </div>
+    </div>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script>
+        function addBus() {
+            const busNumber = document.getElementById("bus_number").value
+            const fromLocation = document.getElementById("busfrom").value
+            const toLocation = document.getElementById("busto").value
+            if (busNumber == '') demo.showNotification("left", "bottom", "Bus Number cant be empty")
+            else if (fromLocation == '') demo.showNotification("left", "bottom", "from Location cant be empty")
+            else if (toLocation == '') demo.showNotification("left", "bottom", "to Location cant be empty")
+            else {
+                const driverCredentials = { busNumber, fromLocation, toLocation }
+                fetch('/bus', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(driverCredentials)
+                })
+                    .then((response) => response.json())
+                    .then((response) => {
+                        if (response.error) {
+                            demo.showNotification("left", "bottom", response.message);
+                        }
+                        else {
+                            document.getElementById('add-bus').style.display = 'none'
+                            demo.showNotification("left", "bottom", response.message);
+                            setTimeout(() => { location.reload() }, 1000);
+                        }
+                    })
+            }
+        }
+
+    </script>
+</body>
+
+</html>
 
 </body>
 

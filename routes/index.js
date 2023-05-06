@@ -74,7 +74,6 @@ router.post("/login", async function (req, res) {
     query = 'SELECT * FROM passenger WHERE username = ? '
   const resp = await runQuery(query, [username])
   const dbPassword = resp[0]?.password
-  console.log(dbPassword, password)
   if (dbPassword == password) {
     sendHTTPResponse.success(res, "Response successfull")
   }
@@ -146,12 +145,10 @@ router.get('/bus', isLoggedIn, async function (request, res) {
 
 router.post('/bus', async function (req, res) {
   try {
-    console.log(req.body)
     const bus_number = req.body.bus_number
     const busfrom = req.body.busfrom
     const busto = req.body.busto
     const uuid = uuidv4()
-    const status = 1
     const query = 'INSERT INTO smartbus.bus (bus_number, busfrom, busto, uuid,status) VALUES (?,?,?,?,?);'
     await runQuery(query, [bus_number, busfrom, busto, uuid, status])
     sendHTTPResponse.success(res, "Bus details added successfully")
@@ -177,10 +174,10 @@ router.put('/bus/:id/inactive', function(req, res) {
 
 router.post('/console', async function (req, res) {
   try {
-    const consoleValue = req.body.consoleValue.data;
-    const query = 'Select * from bus where uuid= ?'
-    const runquery = await runQuery(query, consoleValue)
-    sendHTTPResponse.success(res, "Bus details collected successfully", runquery)
+    const uniqueID = req.body.consoleValue.data
+    const query = 'Select * from smartbus.bus where uuid= ?'
+    const result = await runQuery(query, uniqueID)
+    sendHTTPResponse.success(res, "Bus details collected successfully", result)
   }
   catch (err) {
     console.log(err.message)
@@ -199,6 +196,19 @@ router.get('/passenger-bus-details', async function (req, res) {
   catch (err) {
     console.log(err.message)
     sendHTTPResponse.error(res, "Error in selecting location",)
+  }
+});
+
+router.get('/driver-bus-details', async function (req, res) {
+  try{
+    const uuid = req.query.uuid
+    const query = 'Select * from bus where uuid= ?'
+    const result = await runQuery(query, uuid)
+    sendHTTPResponse.success(res, "Bus chossen successfully", result)
+  }
+  catch (err) {
+    console.log(err.message)
+    sendHTTPResponse.error(res, "Error in selecting bus",)
   }
 });
 

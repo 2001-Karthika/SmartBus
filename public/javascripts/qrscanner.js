@@ -178,4 +178,4 @@ class QRCodeScanner {
     return cb && cb(err, data);
   }
 
-};
+}
