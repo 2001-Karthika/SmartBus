@@ -7,10 +7,8 @@ const { v4: uuidv4 } = require('uuid');
 
 function isLoggedIn(req, res, next) {
   if (req.session.user) {
-    // User is logged in, proceed to next middleware
     next();
   } else {
-    // User is not logged in, redirect to login page
     res.redirect('/login');
   }
 }
@@ -21,10 +19,8 @@ router.get('/', function (request, response) {
 
 router.get('/login', function (request, response) {
   if (request.session.user) {
-    // User is already logged in, redirect to dashboard
     response.redirect('/analytics');
   } else {
-    // User is not logged in, render login page
     response.render('login/login.ejs');
   }
 
@@ -73,13 +69,9 @@ router.get('/passenger-dashboard',isLoggedIn , async function (req, res) {
   res.render('passenger/passenger-dashboard.ejs', { busFrom, busTo });
 })
 
-router.get('/route-selection', isLoggedIn, function (req, res) {
-  res.render('passenger/route-selection.ejs');
-})
-
 router.post('/signup', async function (request, response) {
   const username = request.body.username
-  const fullname = request.body.fullname // getting data that are send form frontend. Since it is through body, so request.body
+  const fullname = request.body.fullname 
   const emailid = request.body.email
   const phone = request.body.phone
   const password = request.body.password
@@ -88,12 +80,11 @@ router.post('/signup', async function (request, response) {
   sendHTTPResponse.success(response, "Response successfull");
 });
 
-
 router.post("/login", async function (req, res) {
   const username = req.body.username
   const password = req.body.password
   req.session.user = username
-  const userType = ~~req.body.userType //0-> ADMIM, 1-> DRIVER, 2-> PASSENGER
+  const userType = ~~req.body.userType 
   let query = ""
   if (userType == 0)
     query = 'SELECT * FROM admin WHERE username = ? '
@@ -154,11 +145,11 @@ router.put('/driver/:id/inactive', function(req, res) {
    const driverId = req.params.id;
    const query = 'UPDATE driver SET status = 0 WHERE id = ?'
    runQuery(query, [driverId])
-   res.sendStatus(200); 
+   sendHTTPResponse.success(res);
   }
   catch (err) {
     console.log(err.message)
-    res.sendStatus(500); 
+    sendHTTPResponse.error(err);
   }
 });
 
@@ -194,11 +185,11 @@ router.put('/bus/:id/inactive', function(req, res) {
    const busId = req.params.id;
    const query = 'UPDATE bus SET status = 0 WHERE id = ?'
    runQuery(query, [busId])
-   res.sendStatus(200); 
+   sendHTTPResponse.success(res);
   }
   catch (err) {
     console.log(err.message)
-    res.sendStatus(500); 
+    sendHTTPResponse.error(res);
   }
 });
 
@@ -214,6 +205,7 @@ router.post('/console', async function (req, res) {
     console.log(err.message)
     sendHTTPResponse.error(res, "Error in collecting data",)
   }
+  // Use QR data   
    
 });
 
