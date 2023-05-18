@@ -1,7 +1,9 @@
 const NodeGeocoder = require('node-geocoder');
 const firebaseLib = require("firebase-admin");
-const accountDetails = require('./keytofirebase.json');
-const runQuery = require('./db/runQuery');
+const accountDetails = require('./keytofirebase.json')
+const IORedis = require('ioredis')
+const redisIOClient = new IORedis()
+const runQuery = require('./db/runQuery')
 
 const getFirebaseConnection = () => {
   firebaseLib.initializeApp({
@@ -22,9 +24,9 @@ const callbackService = () => {
   firebaseLib.database().ref(dbPath).once('value')
     .then(snapshot => {
       const data = snapshot.val()
-      let latitude = data.latitude
-      let longitude = data.longitude
-      let noOfPerson = data.noOfPerson
+      let latitude = data?.latitude
+      let longitude = data?.longitude
+      let noOfPerson = data?.noOfPerson
       // Call the geocoder.reverse method with the retrieved latitude and longitude
       async function getLocFromGeocoder(latitude, longitude) {
         try {
@@ -37,8 +39,11 @@ const callbackService = () => {
       }
       const update = async () => {
         try {
-          const currentLoc = await getLocFromGeocoder(latitude, longitude);
-          const values = [noOfPerson, currentLoc, dbPath];
+          const currentLoc = await getLocFromGeocoder(latitude, longitude)
+          const values = [noOfPerson, currentLoc, dbPath]
+          redisIOClient.hmset('smartbus_settings', 'no_of_persons', noOfPerson??0,
+                                                    'current_location', currentLoc??'',
+                                                    )
           console.log(values);
           const query = `Update bus set crowd = ? , currentLoc = ? where uuid = ?`;
           //add redis update
@@ -53,9 +58,9 @@ const callbackService = () => {
     })
 
 };
-const main = () =>{
+const main = () => {
   getFirebaseConnection()
-  setInterval(()=>{
+  setInterval(() => {
     callbackService()
   }, 3000)
 }

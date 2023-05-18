@@ -43,12 +43,12 @@ router.get('/driver-home', async function(req, res) {
   const query = 'Select * from smartbus.bus where id=?;'
   const result = await runQuery(query, req.session.userID)
   console.log({driverDetails : result[0].busfrom})
-  res.render('driver/driver-home.ejs',{busfrom : result[0].busfrom, busto : result[0].busto, busNo : result[0].bus_number})
+  res.render('driver/driver-home.ejs',{busfrom : result[0].busfrom, busto : result[0].busto, busNo : result[0].bus_number,status:result[0].status==1 ? 'Running' : result[0].status==0?'Not-on-Route' : 'BreakDown'} )
 })
 router.post('/bus-status', async function(req, res) {
   try{
     const busID = req.session.userID
-    const status = Boolean(req.body.isBusRunning) ? '1' : '0'
+    const status = req.body.status
     const query = 'update bus set status=? where id=?;'
     await runQuery(query, [status, busID])
     sendHTTPResponse.success(res, "Status Updated")

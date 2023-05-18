@@ -1,14 +1,14 @@
 const http = require('http');
 const socketio = require('socket.io');
 const cors = require('cors');
-const { request } = require('express');
+const IORedis = require('ioredis')
+const redisIOClient = new IORedis()
 const express = require('express');
 const router = express.Router();
-const runQuery = require('D:/Smart Bus/SmartBus/db/runQuery.js');
-const server = http.createServer(router);
+const runQuery = require('./db/runQuery')
+const server = http.createServer(router)
 const io = socketio(server);
-const redis = require('redis');
-const { route } = require('./routes');
+const redis = require('redis')
 
 
 
@@ -21,29 +21,6 @@ let breakdownCount = 0;
 const query = `SELECT count(*) FROM bus where status = 1`
 let onrouteCount = runQuery(query)
 
-const client = redis.createClient(6379,5000);
-
-(async () => {
-  await client.connect();
-})();
-
-client.on('connect', () => {
-  console.log('Connected to Redis server');
-});
-client.on('error', (err) => {
-  console.error('Redis error:', err);
-});
-
-
-client.set('onrouteCount', JSON.stringify(onrouteCount));
-client.set('notOnrouteCount', JSON.stringify(notOnrouteCount));
-client.set('breakdownCount', JSON.stringify(breakdownCount), (err) => {
-  if (err) {
-    console.error('Error saving counts in Redis:', err);
-  } else {
-    console.log('Counts saved in Redis');
-  }
-});
 
  router.use(cors())
 
@@ -64,58 +41,39 @@ io.on('connection', (socket) => {
       onrouteCount--;
     }
 
-  socket.emit('counts-update', {
-    onrouteCount,
-    notOnrouteCount,
-    breakdownCount,
+
   });
-});
-
-
-  socket.on('test',(data)=>{
+  
+  const updateCount = async ()=>{
+    const query = `  SELECT
+    (SELECT COUNT(id) FROM bus WHERE status = 1) AS running,
+    (SELECT COUNT(id) FROM bus WHERE status = 3) AS breakdown,
+    (SELECT COUNT(id) FROM bus WHERE status = 0) AS not_running;`
+    const busStatusCount = await runQuery(query)
+    const noOfPersons = await redisIOClient.hget('smart_settings','no_of_persons') ?? 0
+    const currentLocation = await redisIOClient.hget('smart_settings','current_location') ?? 'Fetching Data...'
+    const data = {noOfPersons, currentLocation, ...busStatusCount[0]}
     console.log({data})
-  })
+    socket.emit('update-count', data)
+    socket.on('disconnect', () => {
+      console.log('user disconnected');
+    })
+  }
+  const conuntUpdator = ()=>{
+    console.log("first")
+    setInterval(()=>{
+      updateCount()
+    },3000)
+  }
+  conuntUpdator()
+
+
   socket.emit('backendEvent', 'Hello from server!');
   // Handle incoming socket events here
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
+  // socket.on('disconnect', () => {
+  //   console.log('user disconnected');
+  // });
 });
-
-client.get('onRouteCount', (err, result) => {
-  updatedonrouteCount = result??onrouteCount
-  if (err) {
-    console.error('Error retrieving on-route count from Redis:', err);
-  } else {
-    console.log('On-route count:', result);
-  }
-});
-
-client.get('notOnrouteCount', (err, result) => {
-  updatednotOnrouteCount = result??notOnrouteCount
-  if (err) {
-    console.error('Error retrieving not-on-route count from Redis:', err);
-  } else {
-    console.log('Not-on-route count:', result);
-  }
-});
-
-client.set('onRouteCount', updatedonrouteCount);
-client.set('notOnRouteCount', updatednotOnrouteCount);
-client.set('breakdownCount', updatedbreakdownCount, (err) => {
-  if (err) {
-    console.error('Error updating counts in Redis:', err);
-  } else {
-    console.log('Counts updated in Redis');
-  }
-});
-
-// router.get('admin/analytics', (req, res) => {
-//   router.render('admin/analytics', { 
-//     onrouteCount: onrouteCount,
-//     notOnrouteCount: notOnrouteCount,
-//     breakdownCount: breakdownCount
-//   });
 
 server.listen(8080, () => {
   console.log('Server listening on port 8080');
