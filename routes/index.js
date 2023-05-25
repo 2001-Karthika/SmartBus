@@ -168,14 +168,15 @@ router.post('/bus', async function (req, res) {
     const bus_number = req.body.bus_number
     const busfrom = req.body.busfrom
     const busto = req.body.busto
+    const busCapacity = req.body.busCapacity
     const uuid = uuidv4()
     const status = 1
-    const query = 'INSERT INTO smartbus.bus (bus_number, busfrom, busto, uuid,status) VALUES (?,?,?,?,?);'
-    await runQuery(query, [bus_number, busfrom, busto, uuid, status])
+    const query = 'INSERT INTO smartbus.bus (bus_number, busfrom, busto, uuid,status, capacity) VALUES (?,?,?,?,?,?);'
+    await runQuery(query, [bus_number, busfrom, busto, uuid, status, busCapacity])
     sendHTTPResponse.success(res, "Bus details added successfully")
   }
   catch (err) {
-    console.log(err.message)
+    console.log(err)
     sendHTTPResponse.error(res, "Error in adding credentials",)
   }
 });
@@ -215,6 +216,18 @@ router.get('/passenger-bus-details', async function (req, res) {
     const toLocation = req.query.to
     const query = 'Select * from bus where busfrom= ? and busto= ? '
     const result = await runQuery(query, [fromLocation, toLocation])
+    sendHTTPResponse.success(res, "Bus selected successfully", result)
+  }
+  catch (err) {
+    console.log(err.message)
+    sendHTTPResponse.error(res, "Error in selecting location",)
+  }
+})
+
+router.get('/passenger-breakdown-bus-details', async function (req, res) {
+  try {
+    const query = 'Select * from bus where status=3;'
+    const result = await runQuery(query)
     sendHTTPResponse.success(res, "Bus selected successfully", result)
   }
   catch (err) {

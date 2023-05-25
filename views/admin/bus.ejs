@@ -88,6 +88,10 @@
                                 <label for="busto">Bus To</label>
                                 <input type="text" class="form-control" id="busto">
                             </div>
+                            <div class="form-group">
+                                <label for="busto">Bus Capacity</label>
+                                <input type="text" class="form-control" id="bus-capacity">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -108,6 +112,14 @@
     </div>
     </div>
 
+    <div class="container mt-5" id="breakdown-bus-list-parent">
+        <h3 class="text-center">BREAKDOWN BUS LIST</h3>
+        <div class="table-responsive dataTables_wrapper dt-bootstrap4">
+            <table id="breakdown-bus-list" class="table responsive table-hover" style="width:100%">
+            </table>
+        </div>
+    </div>
+
 
 
 
@@ -116,6 +128,68 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
     <script>
+        $(document).ready(function () {
+  populateBreakDownDataTable()
+})
+
+function populateBreakDownDataTable() {
+    console.log("=============================first")
+  fetch(`/passenger-breakdown-bus-details`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+    .then((response) => response.json())
+    .then((response) => {
+      if (response.error) {
+        demo.showNotification("left", "bottom", "Invalid To From")
+      }
+      else {
+        try {
+          const breakdownBusListPassenger = $('#breakdown-bus-list').DataTable({
+            data: response?.data,
+            stateSave: true,
+            pageLength: 25,
+            paging: true,
+            autoWidth: true,
+            deferRender: true,
+            stateSave: true,
+            order: [[0, "desc"]],
+            columns: [
+              { data: 'bus_number', title: 'Bus Number' },
+              { data: 'busfrom', title: 'From Location' },
+              { data: 'busto', title: 'To Location' },
+              {
+                data: 'status', title: 'Status',
+                render: function (data, type, row, meta) {
+                  return data === 1 ? 'Running' : 'Not Running';
+                }
+              },
+              {
+                data: 'crowd', title: 'Density Range',
+                render: function (data, type, row, meta) {
+                  if (data > 50)
+                    return 'High';
+                  else if (data > 25 && data < 40)
+                    return 'Medium';
+                  else
+                    return 'Low';
+                }
+              },
+              { data: 'currentLoc', title: 'Breakdown Location', name: 'currentLocationColumn' },
+
+            ]
+          });
+          breakdownBusListPassenger.destroy();
+        }
+        catch (error) {
+          console.log(error)
+        }
+      }
+    })
+}
+
         let campaignTable;
         try {
              campaignTable = $('#bus-list').DataTable({
@@ -159,13 +233,15 @@
             const bus_number = document.getElementById("bus_number").value
             const busfrom = document.getElementById("busfrom").value
             const busto = document.getElementById("busto").value
+            const busCapacity = document.getElementById("bus-capacity").value
             //Bus db table contents
             if (bus_number == '') demo.showNotification("left", "bottom", "Bus number cant be empty")
             else if (busfrom == '') demo.showNotification("left", "bottom", "Starting point of bus cant be empty")
             else if (busto == '') demo.showNotification("left", "bottom", "Destination cant be empty")
+            else if (busCapacity == '') demo.showNotification("left", "bottom", "Bus Capacity cant be empty")
             
             else {
-                const busCredentials = { bus_number, busfrom, busto}
+                const busCredentials = { bus_number, busfrom, busto, busCapacity}
                 fetch('/bus', {
                     method: 'POST',
                     headers: {
